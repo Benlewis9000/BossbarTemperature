@@ -1,0 +1,10 @@
+name: BossbarTemperature
+version: 1.0
+author: Anarchist
+main: BossbarTemperature
+api-version: 1.13
+commands:
+    temp:
+        description: Main command for BossbarTemperature.
+        usage: /temp
+        permission: bossbartemperature.admin
