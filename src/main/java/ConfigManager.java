@@ -35,8 +35,9 @@ public class ConfigManager {
     public void reloadConfig(){
 
         plugin.reloadConfig();
-        // Update bossbar to new config
+        // Update bossbar to new config and re-run
         plugin.getBossbarManager().updateSettings();
+        plugin.getBossbarManager().run();
 
     }
 

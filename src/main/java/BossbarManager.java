@@ -15,11 +15,12 @@ public class BossbarManager {
     private final BossbarTemperature plugin;
 
     // Bar traits
-    private BossBar bar;
+    private final BossBar bar;
     private int currentTemp;
 
     // Config settings
     private String layout;
+    private boolean enabled;
     private int minTemp;
     private int maxTemp;
     private int peakTime;
@@ -38,30 +39,43 @@ public class BossbarManager {
 
         this.plugin = plugin;
 
+        bar = Bukkit.createBossBar("Loading...", BarColor.BLUE, BarStyle.SOLID);
+        bar.setVisible(false);
+
         plugin.getLogger().info("Instantiated BossbarManager.");
 
-        // load in configuration variables - todo: not very reload friendly, abstract to method?
-        layout = this.plugin.getConfig().getString("layout");
-        minTemp = this.plugin.getConfig().getInt("min-temperature");
-        maxTemp = this.plugin.getConfig().getInt("max-temperature");
-        peakTime = this.plugin.getConfig().getInt("peak-time");
-        tickrate = this.plugin.getConfig().getLong("tickrate");
-        worldName = this.plugin.getConfig().getString("world-name");
+        // load in configuration variables
+        updateSettings();
 
-        bar = Bukkit.createBossBar("Loading...", BarColor.BLUE, BarStyle.SOLID);
+        // If enabled in config, enable
+        run();
+
+    }
+
+    /**
+     * Query whether bossbar is enabled in config, activating if so.
+     */
+    public void run(){
+
+        System.out.println(enabled);
+        if (enabled) enable();
+        else disable();
+
+    }
+
+    /**
+     * Enable the bossbar.
+     */
+    public void enable(){
+
+        bar.setVisible(true);
 
         // Schedule repeating updates
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
-            public void run() {
-                updateTitle();
-            }
-        }, 0L, tickrate);
+        scheduler.scheduleSyncRepeatingTask(plugin, () -> updateTitle(), 0L, tickrate);
 
         // Add all online player to bar
         for (Player p : Bukkit.getServer().getOnlinePlayers()) bar.addPlayer(p);
-
-        bar.setVisible(true);
 
     }
 
@@ -70,7 +84,8 @@ public class BossbarManager {
      */
     public void disable(){
 
-        this.bar.removeAll();
+        bar.setVisible(false);
+        bar.removeAll();
 
     }
 
@@ -80,12 +95,13 @@ public class BossbarManager {
     public void updateSettings(){
 
         // load in configuration variables
-        layout = this.plugin.getConfig().getString("layout");
-        minTemp = this.plugin.getConfig().getInt("min-temperature");
-        maxTemp = this.plugin.getConfig().getInt("max-temperature");
-        peakTime = this.plugin.getConfig().getInt("peak-time");
-        tickrate = this.plugin.getConfig().getLong("tickrate");
-        worldName = this.plugin.getConfig().getString("world-name");
+        layout = plugin.getConfig().getString("layout");
+        enabled = plugin.getConfig().getBoolean("enabled");
+        minTemp = plugin.getConfig().getInt("min-temperature");
+        maxTemp = plugin.getConfig().getInt("max-temperature");
+        peakTime = plugin.getConfig().getInt("peak-time");
+        tickrate = plugin.getConfig().getLong("tickrate");
+        worldName = plugin.getConfig().getString("world-name");
 
     }
 

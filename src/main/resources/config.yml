@@ -1,6 +1,6 @@
 # Layout of bossbar message (colour codes are enabled)
 # %celsius% and %fahrenheit% are replaced with calculated values
-layout: "&bWinter &7| &b%celsius%C &7| &c%fahrenheit%F"
+layout: "&bWinter &7| &f%celsius%C &7| &c%fahrenheit%F"
 enabled: true
 # Ticks to update temperature (default 5s)
 # This can only be changed while the server is offline
